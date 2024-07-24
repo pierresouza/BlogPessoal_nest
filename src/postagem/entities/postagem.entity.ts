@@ -1,3 +1,4 @@
+import { Transform, TransformFnParams } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
 import {
   Column,
@@ -6,19 +7,21 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'tb_postagens' })
+@Entity({ name: 'tb_postagens' }) // Criando a Tabela
 export class Postagem {
-  @PrimaryGeneratedColumn() // Chave primária auto incremento
+  @PrimaryGeneratedColumn() // Chave Primária Autoincremental
   id: number;
 
-  @IsNotEmpty() // Validação para não permitir campo vazio
-  @Column({ length: 100, nullable: false }) // Campo com 100 caracteres e não nulo
+  @Transform(({ value }: TransformFnParams) => value?.trim()) // Bloquear apenas espaços em branco
+  @IsNotEmpty() // Não aceitar titulo vazio
+  @Column({ length: 100, nullable: false }) // Definir o tamanho e não aceitar valor nulo
   titulo: string;
 
-  @IsNotEmpty() // Validação para não permitir campo vazio
-  @Column({ length: 1000, nullable: false }) // Campo com 1000 caracteres e não nulo
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  @IsNotEmpty()
+  @Column({ length: 1000, nullable: false })
   texto: string;
 
-  @UpdateDateColumn() // Campo de data de postagem que serão preenchidas automaticamente
+  @UpdateDateColumn() // A data e a hora serão preenchidas automaticamente
   data: Date;
 }
