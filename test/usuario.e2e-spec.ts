@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { AppModule } from './../src/app.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
+import { AppModule } from '../src/app.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-describe('Testes dos Módulos Usuário e Auth (e2e)', () => {
+describe('Testes dos Módulos Usuario e Auth (e2e)', () => {
   let token: any;
   let usuarioId: any;
   let app: INestApplication;
@@ -46,7 +46,7 @@ describe('Testes dos Módulos Usuário e Auth (e2e)', () => {
   });
 
   it('02 - Não Deve Cadastrar um Usuário Duplicado', async () => {
-    const resposta = await request(app.getHttpServer())
+    await request(app.getHttpServer())
       .post('/usuarios/cadastrar')
       .send({
         nome: 'Root',
@@ -55,11 +55,9 @@ describe('Testes dos Módulos Usuário e Auth (e2e)', () => {
         foto: '-',
       })
       .expect(400);
-
-    usuarioId = resposta.body.id;
   });
 
-  it('03 - Deve Autenticar um Usuário (Login)', async () => {
+  it('03 - Deve Autenticar o Usuário (Login)', async () => {
     const resposta = await request(app.getHttpServer())
       .post('/usuarios/logar')
       .send({
@@ -71,11 +69,11 @@ describe('Testes dos Módulos Usuário e Auth (e2e)', () => {
     token = resposta.body.token;
   });
 
-  it('04 - Deve Listar todos os usuários', async () => {
-    const resposta = await request(app.getHttpServer())
+  it('04 - Deve Listar todos os Usuários', async () => {
+    return request(app.getHttpServer())
       .get('/usuarios/all')
-      .set('Authorization', `${token}`);
-    expect(200);
+      .set('Authorization', `${token}`)
+      .expect(200);
   });
 
   it('05 - Deve Atualizar um Usuário', async () => {
